@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#123a63" />
-    <meta name="description" content="Registro de asistencia para eventos" />
-    <title>Registro de asistencia</title>
+    <meta name="description" content="Registro de asistencia al Primer Simposio Distrital Intersectorial Frente a la RAM" />
+    <title>Primer Simposio Distrital Intersectorial Frente a la RAM</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet" />
@@ -14,18 +14,21 @@
   <body>
     <main class="page-shell">
       <section class="intro" aria-labelledby="page-title">
-        <div class="brand-mark" aria-hidden="true">SDS</div>
+        <img class="event-logo" src="assets/logo-simposio.png" alt="Logo del Primer Simposio Distrital Intersectorial Frente a la RAM" />
+        <p class="event-title">Primer Simposio Distrital Intersectorial Frente a la RAM</p>
         <p class="eyebrow">Control de asistencia</p>
         <h1 id="page-title">Registra tu asistencia</h1>
-        <p class="intro-copy">
-          Completa tus datos tal como aparecen en tu documento. El sistema identificará
-          automáticamente la franja horaria activa.
-        </p>
-
         <div class="event-card">
-          <span>Evento</span>
-          <strong id="event-label">Verificando enlace…</strong>
-          <small>Hora oficial: Colombia</small>
+          <span class="event-card-label">Evento</span>
+          <strong>Primer Simposio Distrital Intersectorial Frente a la RAM</strong>
+          <div class="event-details">
+            <small>Código: <b id="event-label">Verificando enlace…</b></small>
+          </div>
+        </div>
+
+        <div class="partner-logos" aria-label="Entidades organizadoras">
+          <img src="assets/logo-javeriana.png" alt="Pontificia Universidad Javeriana Bogotá" />
+          <img src="assets/logo-sds.png" alt="Alcaldía Mayor de Bogotá y Secretaría Distrital de Salud" />
         </div>
       </section>
 
@@ -59,20 +62,20 @@
 
             <div class="field">
               <label for="numero-documento">Número de documento *</label>
-              <input id="numero-documento" name="numeroDocumento" type="text" inputmode="text" autocomplete="off" maxlength="24" required />
+              <input id="numero-documento" name="numeroDocumento" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" maxlength="24" required />
               <span class="hint">Sin puntos, espacios ni guiones.</span>
               <span class="error" data-error-for="numero-documento"></span>
             </div>
 
             <div class="field">
               <label for="confirmar-documento">Confirma tu documento *</label>
-              <input id="confirmar-documento" type="text" inputmode="text" autocomplete="off" maxlength="24" required />
+              <input id="confirmar-documento" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" maxlength="24" required />
               <span class="error" data-error-for="confirmar-documento"></span>
             </div>
 
             <div class="field field-wide">
               <label for="nombre-completo">Nombre completo *</label>
-              <input id="nombre-completo" name="nombreCompleto" type="text" autocomplete="name" maxlength="120" required />
+              <input id="nombre-completo" name="nombreCompleto" type="text" autocomplete="name" maxlength="120" pattern="[A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]+" required />
               <span class="hint">Así aparecerá en el certificado.</span>
               <span class="error" data-error-for="nombre-completo"></span>
             </div>
@@ -97,7 +100,7 @@
 
           <label class="consent-row">
             <input id="autoriza-datos" name="autorizaDatos" type="checkbox" value="Si" required />
-            <span>Autorizo el tratamiento de mis datos para gestionar la asistencia y, si cumplo los requisitos, generar mi certificado. *</span>
+            <span>Autorizo el tratamiento de mis datos para gestionar la asistencia</span>
           </label>
           <span class="error consent-error" data-error-for="autoriza-datos"></span>
 

@@ -26,8 +26,14 @@ function normalizeCode(value) {
 }
 
 function normalizeDocument(value) {
-  return value.trim().toUpperCase().replace(/[.\s-]/g, "");
+  return value.replace(/\D/g, "");
 }
+
+document.querySelectorAll("#numero-documento, #confirmar-documento").forEach((input) => {
+  input.addEventListener("input", () => {
+    input.value = normalizeDocument(input.value);
+  });
+});
 
 function normalizeEmail(value) {
   return value.trim().toLowerCase();
@@ -36,6 +42,15 @@ function normalizeEmail(value) {
 function cleanName(value) {
   return value.trim().replace(/\s+/g, " ");
 }
+
+function normalizePersonName(value) {
+  return value.replace(/[^\p{L}\s]/gu, "");
+}
+
+const fullNameInput = document.querySelector("#nombre-completo");
+fullNameInput.addEventListener("input", () => {
+  fullNameInput.value = normalizePersonName(fullNameInput.value);
+});
 
 function setError(id, message) {
   const input = document.getElementById(id);
@@ -49,7 +64,7 @@ function validateForm() {
     tipoDocumento: document.querySelector("#tipo-documento").value,
     numeroDocumento: normalizeDocument(document.querySelector("#numero-documento").value),
     confirmarDocumento: normalizeDocument(document.querySelector("#confirmar-documento").value),
-    nombreCompleto: cleanName(document.querySelector("#nombre-completo").value),
+    nombreCompleto: cleanName(normalizePersonName(document.querySelector("#nombre-completo").value)),
     correo: normalizeEmail(document.querySelector("#correo").value),
     confirmarCorreo: normalizeEmail(document.querySelector("#confirmar-correo").value),
     empresa: cleanName(document.querySelector("#empresa").value),
@@ -58,9 +73,9 @@ function validateForm() {
 
   const errors = {
     "tipo-documento": values.tipoDocumento ? "" : "Selecciona el tipo de documento.",
-    "numero-documento": /^[A-Z0-9]{5,24}$/.test(values.numeroDocumento) ? "" : "Ingresa un documento válido.",
+    "numero-documento": /^\d{5,24}$/.test(values.numeroDocumento) ? "" : "Ingresa un documento válido usando solo números.",
     "confirmar-documento": values.numeroDocumento === values.confirmarDocumento ? "" : "Los documentos no coinciden.",
-    "nombre-completo": values.nombreCompleto.length >= 5 ? "" : "Escribe tu nombre completo.",
+    "nombre-completo": /^[\p{L}]+(?: [\p{L}]+)*$/u.test(values.nombreCompleto) && values.nombreCompleto.length >= 5 ? "" : "Escribe tu nombre usando solo letras.",
     correo: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.correo) ? "" : "Ingresa un correo válido.",
     "confirmar-correo": values.correo === values.confirmarCorreo ? "" : "Los correos no coinciden.",
     "autoriza-datos": values.autorizaDatos ? "" : "Debes autorizar el tratamiento de datos."
