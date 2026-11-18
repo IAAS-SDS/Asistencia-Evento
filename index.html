@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#123a63" />
+    <meta name="description" content="Registro de asistencia para eventos" />
+    <title>Registro de asistencia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="intro" aria-labelledby="page-title">
+        <div class="brand-mark" aria-hidden="true">SDS</div>
+        <p class="eyebrow">Control de asistencia</p>
+        <h1 id="page-title">Registra tu asistencia</h1>
+        <p class="intro-copy">
+          Completa tus datos tal como aparecen en tu documento. El sistema identificará
+          automáticamente la franja horaria activa.
+        </p>
+
+        <div class="event-card">
+          <span>Evento</span>
+          <strong id="event-label">Verificando enlace…</strong>
+          <small>Hora oficial: Colombia</small>
+        </div>
+      </section>
+
+      <section class="form-card" aria-labelledby="form-title">
+        <div class="form-heading">
+          <p class="step">Registro único por franja</p>
+          <h2 id="form-title">Datos del participante</h2>
+          <p>Los campos marcados con * son obligatorios.</p>
+        </div>
+
+        <div id="link-error" class="notice notice-error" role="alert" hidden>
+          Este enlace no identifica un evento válido. Escanea nuevamente el código QR.
+        </div>
+
+        <form id="attendance-form" novalidate>
+          <input type="hidden" id="evento-id" name="eventoId" />
+
+          <div class="field-grid">
+            <div class="field">
+              <label for="tipo-documento">Tipo de documento *</label>
+              <select id="tipo-documento" name="tipoDocumento" required>
+                <option value="">Selecciona una opción</option>
+                <option value="CC">Cédula de ciudadanía</option>
+                <option value="CE">Cédula de extranjería</option>
+                <option value="TI">Tarjeta de identidad</option>
+                <option value="PAS">Pasaporte</option>
+                <option value="OTRO">Otro</option>
+              </select>
+              <span class="error" data-error-for="tipo-documento"></span>
+            </div>
+
+            <div class="field">
+              <label for="numero-documento">Número de documento *</label>
+              <input id="numero-documento" name="numeroDocumento" type="text" inputmode="text" autocomplete="off" maxlength="24" required />
+              <span class="hint">Sin puntos, espacios ni guiones.</span>
+              <span class="error" data-error-for="numero-documento"></span>
+            </div>
+
+            <div class="field">
+              <label for="confirmar-documento">Confirma tu documento *</label>
+              <input id="confirmar-documento" type="text" inputmode="text" autocomplete="off" maxlength="24" required />
+              <span class="error" data-error-for="confirmar-documento"></span>
+            </div>
+
+            <div class="field field-wide">
+              <label for="nombre-completo">Nombre completo *</label>
+              <input id="nombre-completo" name="nombreCompleto" type="text" autocomplete="name" maxlength="120" required />
+              <span class="hint">Así aparecerá en el certificado.</span>
+              <span class="error" data-error-for="nombre-completo"></span>
+            </div>
+
+            <div class="field">
+              <label for="correo">Correo electrónico *</label>
+              <input id="correo" name="correo" type="email" autocomplete="email" maxlength="160" required />
+              <span class="error" data-error-for="correo"></span>
+            </div>
+
+            <div class="field">
+              <label for="confirmar-correo">Confirma tu correo *</label>
+              <input id="confirmar-correo" type="email" autocomplete="off" maxlength="160" required />
+              <span class="error" data-error-for="confirmar-correo"></span>
+            </div>
+
+            <div class="field field-wide">
+              <label for="empresa">Empresa o institución</label>
+              <input id="empresa" name="empresa" type="text" autocomplete="organization" maxlength="120" />
+            </div>
+          </div>
+
+          <label class="consent-row">
+            <input id="autoriza-datos" name="autorizaDatos" type="checkbox" value="Si" required />
+            <span>Autorizo el tratamiento de mis datos para gestionar la asistencia y, si cumplo los requisitos, generar mi certificado. *</span>
+          </label>
+          <span class="error consent-error" data-error-for="autoriza-datos"></span>
+
+          <button class="primary-button" type="submit">Revisar y enviar</button>
+          <p class="privacy-note">Tu registro será validado con la fecha y hora oficial del sistema.</p>
+        </form>
+
+        <section id="result-panel" class="result-panel" role="status" aria-live="polite" hidden>
+          <div id="result-icon" class="result-icon" aria-hidden="true">✓</div>
+          <h2 id="result-title">Asistencia registrada</h2>
+          <p id="result-message"></p>
+          <button id="new-attempt" class="secondary-button" type="button">Volver al formulario</button>
+        </section>
+      </section>
+    </main>
+
+    <dialog id="confirmation-dialog">
+      <form method="dialog" class="dialog-card">
+        <p class="step">Verifica antes de enviar</p>
+        <h2>¿Los datos son correctos?</h2>
+        <dl id="confirmation-data"></dl>
+        <p class="dialog-warning">Tu documento y correo se usarán para identificarte en las demás franjas.</p>
+        <div class="dialog-actions">
+          <button class="secondary-button" value="cancel">Corregir</button>
+          <button id="confirm-submit" class="primary-button" value="confirm">Confirmar asistencia</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div id="loading-overlay" class="loading-overlay" role="dialog" aria-modal="true" aria-labelledby="loading-title" aria-describedby="loading-message" hidden>
+      <div class="loading-card">
+        <div class="loading-spinner" aria-hidden="true"></div>
+        <h2 id="loading-title">Registrando asistencia</h2>
+        <p id="loading-message">Estamos validando tus datos. Por favor, no cierres esta ventana.</p>
+      </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
